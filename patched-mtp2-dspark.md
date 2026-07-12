@@ -47,7 +47,7 @@ This document records the software revisions, runtime configuration, patches, st
 | Configuration | Best Throughput (tok/s) | Best Scenario |
 |---|---:|---|
 | **Patched MTP-2** | **2362.2** | Context 0, Concurrency 64 |
-| **Patched DSpark** | **1984.18** | Context 8192, Concurrency 64 |
+| **Patched DSpark** | **1926.71** | Context 8192, Concurrency 64 |
 | **Stock vLLM 0.25.0 + FlashInfer 0.6.14** | **1944.42** | Context 0, Concurrency 64 |
 
 Overall ranking:
@@ -227,26 +227,53 @@ Concurrency: 1, 2, 4, 8, 16, 32, 64
 
 | Context | 1 | 2 | 4 | 8 | 16 | 32 | 64 |
 |---|---:|---:|---:|---:|---:|---:|---:|
-|0|175.26|251.32|352.85|497.88|741.06|1113.40|1709.70|
-|8192|215.71|280.53|374.78|630.47|950.89|1212.54|1984.18|
+|0|175.00|252.09|365.14|492.50|729.24|1124.33|1726.52|
+|8192|218.07|354.69|456.42|530.06|849.19|1195.57|1919.39|
+|16384|201.30|269.24|428.51|508.37|809.93|1265.02|—|
+|32768|225.50|260.04|446.88|566.16|709.07|1295.52|—|
+|65536|194.69|320.31|393.15|516.97|753.60|—|—|
+|131072|177.51|259.43|367.11|528.09|—|—|—|
+|262144|194.54|282.76|351.96|—|—|—|—|
 
 ## Run 2
 
 | Context | 1 | 2 | 4 | 8 | 16 | 32 | 64 |
 |---|---:|---:|---:|---:|---:|---:|---:|
-|0|171.15|245.73|345.43|493.56|746.63|1127.43|1725.35|
-|8192|203.23|258.92|403.26|538.64|744.62|1219.54|1923.63|
+|0|177.01|258.48|344.16|503.96|768.82|1129.40|1711.55|
+|8192|223.85|294.46|427.49|538.11|883.81|1348.99|1926.71|
+|16384|242.70|255.37|387.16|534.97|787.38|1221.22|—|
+|32768|219.64|254.33|398.33|480.90|845.08|1142.76|—|
+|65536|211.21|301.53|398.25|487.44|803.95|—|—|
+|131072|211.15|276.31|371.59|522.83|—|—|—|
+|262144|168.19|313.36|373.76|—|—|—|—|
 
 # DSpark Speculative Metrics
 
-Short validation capture only:
+Unlike the earlier validation run, the full benchmark logs expose continuous
+speculative decoding metrics throughout benchmark execution.
 
-- Speculative rounds: 1
-- Draft tokens: 5
-- Accepted tokens: 1
-- Acceptance: 20%
+| Metric | Typical Value / Range |
+|---|---:|
+| Mean acceptance length | 2.2–5.5 tokens |
+| Typical draft acceptance | 40–60% |
+| Peak draft acceptance | 89.2% |
+| Peak mean acceptance length | 5.46 tokens |
 
-These are not representative of full benchmark execution.
+Representative steady-state samples:
+
+| Mean Acceptance Length | Avg Draft Acceptance | Accepted Throughput | Draft Throughput |
+|---:|---:|---:|---:|
+| 3.84 | 56.7% | 422.6 tok/s | 745.4 tok/s |
+| 3.72 | 54.4% | 382.9 tok/s | 704.0 tok/s |
+| 3.93 | 58.5% | 165.6 tok/s | 283.0 tok/s |
+| 4.17 | 63.5% | 179.0 tok/s | 282.0 tok/s |
+| 4.33 | 66.6% | 175.4 tok/s | 263.5 tok/s |
+| 5.30 | 86.1% | 240.1 tok/s | 279.0 tok/s |
+| 5.46 | 89.2% | 63.8 tok/s | 71.5 tok/s |
+
+Per-position acceptance decreases with deeper speculative positions, which is
+expected for DSpark. These values were collected from the full benchmark logs
+rather than a short validation request.
 
 ---
 
