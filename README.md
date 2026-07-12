@@ -6,8 +6,8 @@ This repository contains reproducible benchmarks and configuration notes for run
 
 | Configuration | Status | Document |
 |---------------|:------:|----------|
-| Stock vLLM 0.25.0 + FlashInfer 0.6.14 | ✅ | [Stock Baseline](docs/stock-vllm-v0.25.md) |
-| Patched vLLM (MTP2 + DSpark) | ✅ | [Patched MTP2 + DSpark](docs/patched-mtp2-dspark.md) |
+| Stock vLLM 0.25.0 + FlashInfer 0.6.14 | ✅ | [Stock Baseline](stock-vllm-v0.25.md) |
+| Patched vLLM (MTP2 + DSpark) | ✅ | [Patched MTP2 + DSpark](patched-mtp2-dspark.md) |
 
 ## Comparison
 
